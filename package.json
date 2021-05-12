@@ -12,6 +12,7 @@
     "eslint-config-airbnb-base": "^14.2.1",
     "eslint-plugin-import": "^2.22.1",
     "mini-css-extract-plugin": "^1.6.0",
+    "postcss": "^8.2.15",
     "postcss-loader": "^5.2.0",
     "webpack-notifier": "^1.13.0"
   },
