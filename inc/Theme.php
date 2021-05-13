@@ -79,11 +79,11 @@ class Theme extends Site
     add_theme_support(
       'html5',
       array(
-            'comment-form',
-            'comment-list',
-            'gallery',
-            'caption',
-        )
+        'comment-form',
+        'comment-list',
+        'gallery',
+        'caption',
+      )
     );
 
     /*
@@ -94,14 +94,14 @@ class Theme extends Site
     add_theme_support(
       'post-formats',
       array(
-            'aside',
-            'image',
-            'video',
-            'quote',
-            'link',
-            'gallery',
-            'audio',
-        )
+        'aside',
+        'image',
+        'video',
+        'quote',
+        'link',
+        'gallery',
+        'audio',
+      )
     );
 
     add_theme_support('menus');

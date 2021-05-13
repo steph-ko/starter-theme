@@ -1,4 +1,5 @@
 <?php
+
 /**
  * The Template for the sidebar containing the main widget area
  *
@@ -6,4 +7,6 @@
  * @subpackage  Timber
  */
 
-Timber::render( array( 'sidebar.twig' ), $data );
+use Timber\Timber;
+
+Timber::render(array('sidebar.twig'), $data);

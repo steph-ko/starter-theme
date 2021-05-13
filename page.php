@@ -1,4 +1,5 @@
 <?php
+
 /**
  * The template for displaying all pages.
  *
@@ -21,8 +22,10 @@
  * @since    Timber 0.1
  */
 
+use Timber\{Post, Timber};
+
 $context = Timber::context();
 
-$timber_post     = new Timber\Post();
-$context['post'] = $timber_post;
-Timber::render( array( 'page-' . $timber_post->post_name . '.twig', 'page.twig' ), $context );
+$timberPost     = new Post();
+$context['post'] = $timberPost;
+Timber::render(array('page-' . $timberPost->post_name . '.twig', 'page.twig'), $context);
