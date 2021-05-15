@@ -32,11 +32,17 @@
 
   <rule ref="PEAR.Functions.FunctionDeclaration">
     <properties>
-        <property name="indent" value="2" />
+      <property name="indent" value="2" />
     </properties>
   </rule>
 
   <rule ref="PSR2.Methods.FunctionCallSignature">
+    <properties>
+      <property name="indent" value="2" />
+    </properties>
+  </rule>
+
+  <rule ref="Squiz.Functions.MultiLineFunctionDeclaration">
     <properties>
       <property name="indent" value="2" />
     </properties>
