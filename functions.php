@@ -1,16 +1,15 @@
 <?php
 
 /**
- * Timber starter-theme
- * https://github.com/timber/starter-theme
+ * Functions and definitions.
  *
- * @package  WordPress
- * @subpackage  Timber
- * @since   Timber 0.1
+ * @link https://github.com/timber/starter-theme
+ *
+ * @package  App
+ * @since    App 0.0.0
  */
 
 use Timber\Timber;
-use App\Theme;
 
 /**
  * If you are installing Timber as a Composer dependency in your theme, you'll need this block
@@ -20,13 +19,15 @@ use App\Theme;
 $autoloader = __DIR__ . '/vendor/autoload.php';
 if (file_exists($autoloader)) {
   require_once $autoloader;
-  $timber = new Timber();
 }
 
 /**
  * This ensures that Timber is loaded and available as a PHP class.
  * If not, it gives an error message to help direct developers on where to activate
  */
+
+$timber = new Timber();
+
 if (!class_exists('Timber')) {
   add_action(
     'admin_notices',
@@ -38,7 +39,7 @@ if (!class_exists('Timber')) {
   add_filter(
     'template_include',
     function ($template) {
-      return get_stylesheet_directory().'/public/no-timber.html';
+      return get_stylesheet_directory() . '/public/no-timber.html';
     }
   );
 
@@ -56,5 +57,4 @@ Timber::$dirname = array('templates', 'views');
  */
 Timber::$autoescape = false;
 
-
-new Theme();
+require_once __DIR__ . '/bootstrap.php';
