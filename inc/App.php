@@ -37,8 +37,6 @@ class App extends Site
     add_filter('timber/twig', array($this, 'addToTwig'));
     // add_action('init', array($this, 'registerPostTypes'));
     // add_action('init', array($this, 'registerTaxonomies'));
-
-    // $this->wpEvents->addListener('customize_register', array($this, 'customize'));
   }
 
   /** This is where you can register custom post types. */
