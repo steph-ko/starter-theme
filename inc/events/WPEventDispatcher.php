@@ -20,10 +20,12 @@ class WPEventDispatcher
    * @param callable $listener
    * @param int      $priority
    * @param int      $acceptedArgs
+   *
+   * @return void
    */
-  public function addListener($eventName, $listener, $priority = 10, $acceptedArgs = 1): bool
+  public function addListener($eventName, $listener, $priority = 10, $acceptedArgs = 1): void
   {
-    return $this->addCallback($eventName, $listener, $priority, $acceptedArgs);
+    $this->addCallback($eventName, $listener, $priority, $acceptedArgs);
   }
 
   /**
@@ -31,8 +33,10 @@ class WPEventDispatcher
    *
    * The event manager registers all the hooks that the given subscriber
    * wants to register with the WordPress Plugin API.
+   *
+   * @return void
    */
-  public function addSubscriber(WPEventSubscriberInterface $subscriber)
+  public function addSubscriber(WPEventSubscriberInterface $subscriber): void
   {
     foreach ($subscriber::getSubscribedEvents() as $hookName => $param) {
       $this->addSubscriberCallback($subscriber, $hookName, $param);
@@ -46,10 +50,12 @@ class WPEventDispatcher
    * @param string   $eventName
    * @param callable $listener
    * @param int      $priority
+   *
+   * @return void
    */
-  public function removeListener($eventName, $listener, $priority = 10): bool
+  public function removeListener($eventName, $listener, $priority = 10): void
   {
-    return $this->removeCallback($eventName, $listener, $priority);
+    $this->removeCallback($eventName, $listener, $priority);
   }
 
   /**
@@ -136,9 +142,9 @@ class WPEventDispatcher
    * @param int      $priority
    * @param int      $acceptedArgs
    */
-  public function addCallback($hookName, $callback, $priority = 10, $acceptedArgs = 1): bool
+  public function addCallback($hookName, $callback, $priority = 10, $acceptedArgs = 1): void
   {
-    return add_filter($hookName, $callback, $priority, $acceptedArgs);
+    add_filter($hookName, $callback, $priority, $acceptedArgs);
   }
 
   /**
@@ -162,7 +168,7 @@ class WPEventDispatcher
    * Adds the given subscriber's callback to a specific hook
    * of the WordPress plugin API.
    */
-  private function addSubscriberCallback(WPEventSubscriberInterface $subscriber, string $hookName, $params): ?bool
+  private function addSubscriberCallback(WPEventSubscriberInterface $subscriber, string $hookName, $params)
   {
     if (is_string($params)) {
       return $this->addCallback($hookName, [$subscriber, $params]);
