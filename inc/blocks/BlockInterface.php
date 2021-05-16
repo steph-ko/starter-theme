@@ -3,11 +3,11 @@
 /**
  * [Summary]
  *
- * @package  App
- * @since    App 0.0.0
+ * @package  Quistic
+ * @since    Quistic 0.0.0
  */
 
-namespace App\Blocks;
+namespace Quistic\Blocks;
 
 interface BlockInterface
 {
