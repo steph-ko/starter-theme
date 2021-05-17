@@ -13,8 +13,9 @@ namespace App\Events;
 class WPEventDispatcher
 {
   /**
-   * Adds the given event listener to the list of event listeners
-   * that listen to the given event.
+   * Adds a listener callback to a specific event hook of the WordPress Plugin API.
+   *
+   * @uses add_filter()
    *
    * @param string   $eventName
    * @param callable $listener
@@ -23,9 +24,9 @@ class WPEventDispatcher
    *
    * @return void
    */
-  public function addListener($eventName, $listener, $priority = 10, $acceptedArgs = 1): void
+  public function addListener($eventName, callable $listener, $priority = 10, $acceptedArgs = 1): void
   {
-    $this->addCallback($eventName, $listener, $priority, $acceptedArgs);
+    add_filter($eventName, $listener, $priority, $acceptedArgs);
   }
 
   /**
@@ -44,22 +45,26 @@ class WPEventDispatcher
   }
 
   /**
-   * Removes the given event listener from the list of event listeners
-   * that listen to the given event.
+   * Removes the given listener callback from the list of event listeners
+   * that listen to the given event. Removes the given callback from the given hook.
+   * The WordPress Plugin API only removes the hook if the callback and priority match
+   * a registered hook.
+   *
+   * @uses remove_filter()
    *
    * @param string   $eventName
    * @param callable $listener
    * @param int      $priority
    *
-   * @return void
+   * @return bool
    */
-  public function removeListener($eventName, $listener, $priority = 10): void
+  public function removeListener($eventName, $listener, $priority = 10): bool
   {
-    $this->removeCallback($eventName, $listener, $priority);
+    return remove_filter($eventName, $listener, $priority);
   }
 
   /**
-   * Remove an event subscriber.
+   * Removes an event subscriber.
    *
    * The event manager removes all the hooks that the given subscriber
    * wants to register with the WordPress Plugin API.
@@ -78,7 +83,7 @@ class WPEventDispatcher
    *
    * @param string $hookName
    */
-  public function dispatch()
+  public function dispatchAction()
   {
     $args = func_get_args();
     return call_user_func_array('do_action', $args);
@@ -95,14 +100,14 @@ class WPEventDispatcher
    *
    * @return mixed
    */
-  public function pipe()
+  public function dispatchFilter()
   {
     $args = func_get_args();
     return call_user_func_array('apply_filters', $args);
   }
 
   /**
-   * Get the name of the hook that WordPress Plugin API is executing. Returns
+   * Gets the name of the hook that WordPress Plugin API is executing. Returns
    * false if it isn't executing a hook.
    *
    * @uses current_filter()
@@ -133,49 +138,17 @@ class WPEventDispatcher
   }
 
   /**
-   * Adds a callback to a specific hook of the WordPress Plugin API.
-   *
-   * @uses add_filter()
-   *
-   * @param string   $hookName
-   * @param callable $callback
-   * @param int      $priority
-   * @param int      $acceptedArgs
-   */
-  public function addCallback($hookName, $callback, $priority = 10, $acceptedArgs = 1): void
-  {
-    add_filter($hookName, $callback, $priority, $acceptedArgs);
-  }
-
-  /**
-   * Removes the given callback from the given hook. The WordPress Plugin API only
-   * removes the hook if the callback and priority match a registered hook.
-   *
-   * @uses remove_filter()
-   *
-   * @param string   $hookName
-   * @param callable $callback
-   * @param int      $priority
-   *
-   * @return bool
-   */
-  public function removeCallback($hookName, $callback, $priority = 10): bool
-  {
-    return remove_filter($hookName, $callback, $priority);
-  }
-
-  /**
    * Adds the given subscriber's callback to a specific hook
    * of the WordPress plugin API.
    */
   private function addSubscriberCallback(WPEventSubscriberInterface $subscriber, string $hookName, $params)
   {
     if (is_string($params)) {
-      return $this->addCallback($hookName, [$subscriber, $params]);
+      return $this->addListener($hookName, [$subscriber, $params]);
     }
 
     if (is_array($params) && isset($params[0])) {
-      return $this->addCallback(
+      return $this->addListener(
         $hookName,
         [$subscriber, $params[0]],
         isset($params[1]) ? $params[1] : 10,
@@ -191,11 +164,11 @@ class WPEventDispatcher
   private function removeSubscriberCallback(WPEventSubscriberInterface $subscriber, $hookName, $params)
   {
     if (is_string($params)) {
-      $this->removeCallback($hookName, [$subscriber, $params]);
+      $this->removeListener($hookName, [$subscriber, $params]);
     }
 
     if (is_array($params) && isset($params[0])) {
-      $this->removeCallback($hookName, [$subscriber, $params[0]], isset($params[1]) ? $params[1] : 10);
+      $this->removeListener($hookName, [$subscriber, $params[0]], isset($params[1]) ? $params[1] : 10);
     }
   }
 }
