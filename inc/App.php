@@ -110,6 +110,6 @@ class App extends Site
       return $classes;
     };
 
-    $this->wpEvents->addCallback('body_class', $newClasses);
+    $this->wpEvents->addListener('body_class', $newClasses);
   }
 }
