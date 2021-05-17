@@ -77,32 +77,6 @@ class App extends Site
     return $twig;
   }
 
-  public function addSupport(array $features)
-  {
-    $support = function () use ($features) {
-      foreach ($features as $feature) {
-        if (is_string($feature)) {
-          add_theme_support($feature);
-        }
-
-        if (is_array($feature)) {
-          add_theme_support($feature[0], $feature[1]);
-        }
-      }
-    };
-
-    $this->wpEvents->addListener('after_setup_theme', $support);
-  }
-
-  public function addStyles($handle, $src = "", $deps = array(), $ver = false, $media = "all")
-  {
-    $styles = function () use ($handle, $src, $deps, $ver, $media) {
-      wp_enqueue_style($handle, $src, $deps, $ver, $media);
-    };
-
-    $this->wpEvents->addListener('wp_enqueue_scripts', $styles);
-  }
-
   public function removeBodyClass(string $class)
   {
     $newClasses = function (array $classes) use ($class) {

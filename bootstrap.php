@@ -7,13 +7,15 @@
  * @since    App 0.0.0
  */
 
-use App\App;
+use App\{App, Features};
 use App\Events\WPEventDispatcher;
 use Timber\Timber;
 
 $context = Timber::get_context();
+$dispatcher = new WPEventDispatcher();
 
-$app = new App(new WPEventDispatcher(), $context);
+$app = new App($dispatcher, $context);
+$features = new Features();
 
 $supportFeatures = array(
   'menus',
@@ -45,5 +47,5 @@ $supportFeatures = array(
   array('post-formats', array('aside', 'image', 'video', 'quote', 'link', 'gallery', 'audio'))
 );
 
-$app->addSupport($supportFeatures);
+$dispatcher->addListener('after_setup_theme', $features->addSupport($supportFeatures));
 $app->load();
