@@ -24,10 +24,13 @@ class App extends Site
    */
   private $wpEvents;
 
+  private $context;
+
   /** Add timber support. */
-  public function __construct(WPEventDispatcher $wpEvents)
+  public function __construct(WPEventDispatcher $wpEvents, $context)
   {
     $this->wpEvents = $wpEvents;
+    $this->context = $context;
     parent::__construct();
   }
 

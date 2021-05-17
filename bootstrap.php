@@ -13,7 +13,7 @@ use Timber\Timber;
 
 $context = Timber::get_context();
 
-$app = new App(new WPEventDispatcher());
+$app = new App(new WPEventDispatcher(), $context);
 
 $supportFeatures = array(
   'menus',
