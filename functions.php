@@ -10,6 +10,10 @@
  */
 
 use Timber\Timber;
+use App\Features;
+use App\Events\WPEventDispatcher;
+use Timber\{Menu, Site};
+use Twig\Extension\StringLoaderExtension;
 
 /**
  * If you are installing Timber as a Composer dependency in your theme, you'll need this block
@@ -32,7 +36,11 @@ if (!class_exists('Timber')) {
   add_action(
     'admin_notices',
     function () {
-      echo '<div class="error"><p>Timber not activated. Make sure you activate the plugin in <a href="' . esc_url(admin_url('plugins.php#timber')) . '">' . esc_url(admin_url('plugins.php')) . '</a></p></div>';
+      echo '<div class="error"><p>Timber not activated. Make sure you activate the plugin in <a href="'
+      . esc_url(admin_url('plugins.php#timber'))
+      . '">'
+      . esc_url(admin_url('plugins.php'))
+      . '</a></p></div>';
     }
   );
 
@@ -57,4 +65,27 @@ Timber::$dirname = array('templates', 'views');
  */
 Timber::$autoescape = false;
 
-require_once __DIR__ . '/bootstrap.php';
+
+WPEventDispatcher::addListener(
+  'timber/context',
+  function ($context) {
+    $context['menu']  = new Menu();
+    // $context['site']  = $site;
+    return $context;
+  },
+);
+
+WPEventDispatcher::addListener(
+  'timber/twig',
+  function ($twig) {
+    $twig->addExtension(new StringLoaderExtension());
+    // $twig->addFilter(new TwigFilter('myfoo', ));
+    return $twig;
+  },
+);
+
+$supportFeatures = require_once __DIR__ . '/inc/config/support.php';
+
+WPEventDispatcher::addListener('after_setup_theme', Features::addSupport($supportFeatures));
+
+new Site();

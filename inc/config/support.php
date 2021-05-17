@@ -1,23 +1,6 @@
 <?php
 
-/**
- * The theme bootstrap file.
- *
- * @package  App
- * @since    App 0.0.0
- */
-
-use App\{App, Features};
-use App\Events\WPEventDispatcher;
-use Timber\Timber;
-
-$context = Timber::get_context();
-$dispatcher = new WPEventDispatcher();
-
-$app = new App($dispatcher, $context);
-$features = new Features();
-
-$supportFeatures = array(
+return array(
   'menus',
   // Add default posts and comments RSS feed links to head.
   'automatic-feed-links',
@@ -46,6 +29,3 @@ $supportFeatures = array(
    */
   array('post-formats', array('aside', 'image', 'video', 'quote', 'link', 'gallery', 'audio'))
 );
-
-$dispatcher->addListener('after_setup_theme', $features->addSupport($supportFeatures));
-$app->load();

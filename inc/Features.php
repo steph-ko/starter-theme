@@ -11,7 +11,7 @@ namespace App;
 
 class Features
 {
-  public function addSupport(array $features): callable
+  public static function addSupport(array $features): callable
   {
     return function () use ($features) {
       foreach ($features as $feature) {
@@ -26,7 +26,7 @@ class Features
     };
   }
 
-  public function addStyles($handle, $src = '', $deps = array(), $ver = false, $media = 'all'): callable
+  public static function addStyles($handle, $src = '', $deps = array(), $ver = false, $media = 'all'): callable
   {
     return function () use ($handle, $src, $deps, $ver, $media) {
       wp_enqueue_style($handle, $src, $deps, $ver, $media);

@@ -24,7 +24,7 @@ class WPEventDispatcher
    *
    * @return void
    */
-  public function addListener($eventName, callable $listener, $priority = 10, $acceptedArgs = 1): void
+  public static function addListener($eventName, callable $listener, $priority = 10, $acceptedArgs = 1): void
   {
     add_filter($eventName, $listener, $priority, $acceptedArgs);
   }
@@ -37,10 +37,10 @@ class WPEventDispatcher
    *
    * @return void
    */
-  public function addSubscriber(WPEventSubscriberInterface $subscriber): void
+  public static function addSubscriber(WPEventSubscriberInterface $subscriber): void
   {
     foreach ($subscriber::getSubscribedEvents() as $hookName => $param) {
-      $this->addSubscriberCallback($subscriber, $hookName, $param);
+      self::addSubscriberCallback($subscriber, $hookName, $param);
     }
   }
 
@@ -58,7 +58,7 @@ class WPEventDispatcher
    *
    * @return bool
    */
-  public function removeListener($eventName, $listener, $priority = 10): bool
+  public static function removeListener($eventName, $listener, $priority = 10): bool
   {
     return remove_filter($eventName, $listener, $priority);
   }
@@ -69,10 +69,10 @@ class WPEventDispatcher
    * The event manager removes all the hooks that the given subscriber
    * wants to register with the WordPress Plugin API.
    */
-  public function removeSubscriber(WPEventSubscriberInterface $subscriber)
+  public static function removeSubscriber(WPEventSubscriberInterface $subscriber)
   {
     foreach ($subscriber::getSubscribedEvents() as $hookName => $params) {
-      $this->removeSubscriberCallback($subscriber, $hookName, $params);
+      self::removeSubscriberCallback($subscriber, $hookName, $params);
     }
   }
 
@@ -83,7 +83,7 @@ class WPEventDispatcher
    *
    * @param string $hookName
    */
-  public function dispatchAction()
+  public static function dispatchAction()
   {
     $args = func_get_args();
     return call_user_func_array('do_action', $args);
@@ -100,7 +100,7 @@ class WPEventDispatcher
    *
    * @return mixed
    */
-  public function dispatchFilter()
+  public static function dispatchFilter()
   {
     $args = func_get_args();
     return call_user_func_array('apply_filters', $args);
@@ -114,7 +114,7 @@ class WPEventDispatcher
    *
    * @return string|bool
    */
-  public function getCurrentHook()
+  public static function getCurrentHook()
   {
     return current_filter();
   }
@@ -132,7 +132,7 @@ class WPEventDispatcher
    *
    * @return bool|int
    */
-  public function hasCallback($hookName, $callback = false)
+  public static function hasCallback($hookName, $callback = false)
   {
     return has_filter($hookName, $callback);
   }
@@ -141,14 +141,14 @@ class WPEventDispatcher
    * Adds the given subscriber's callback to a specific hook
    * of the WordPress plugin API.
    */
-  private function addSubscriberCallback(WPEventSubscriberInterface $subscriber, string $hookName, $params)
+  protected static function addSubscriberCallback(WPEventSubscriberInterface $subscriber, string $hookName, $params)
   {
     if (is_string($params)) {
-      return $this->addListener($hookName, [$subscriber, $params]);
+      return self::addListener($hookName, [$subscriber, $params]);
     }
 
     if (is_array($params) && isset($params[0])) {
-      return $this->addListener(
+      return self::addListener(
         $hookName,
         [$subscriber, $params[0]],
         isset($params[1]) ? $params[1] : 10,
@@ -161,14 +161,14 @@ class WPEventDispatcher
    * Removes the given subscriber's callback to a specific hook
    * of the WordPress Plugin API.
    */
-  private function removeSubscriberCallback(WPEventSubscriberInterface $subscriber, $hookName, $params)
+  protected static function removeSubscriberCallback(WPEventSubscriberInterface $subscriber, $hookName, $params)
   {
     if (is_string($params)) {
-      $this->removeListener($hookName, [$subscriber, $params]);
+      self::removeListener($hookName, [$subscriber, $params]);
     }
 
     if (is_array($params) && isset($params[0])) {
-      $this->removeListener($hookName, [$subscriber, $params[0]], isset($params[1]) ? $params[1] : 10);
+      self::removeListener($hookName, [$subscriber, $params[0]], isset($params[1]) ? $params[1] : 10);
     }
   }
 }
